@@ -17,7 +17,7 @@ import com.example.ratelimiter.ratelimit.InMemoryTokenBucketRateLimiter;
 @AutoConfigureMockMvc
 @TestPropertySource(properties = {
         "ratelimiter.enabled=true",
-        "ratelimiter.strategy-type=token-bucket",
+        "ratelimiter.strategy-type=fixed-window",
         "ratelimiter.limit=2",
         "ratelimiter.window-seconds=60",
         "ratelimiter.include-paths=/api/**",
@@ -38,13 +38,13 @@ class RateLimiterTokenBucketIntegrationTests {
 
     @Test
     void tokenBucketStrategyIsAppliedViaConfiguration() throws Exception {
-        mockMvc.perform(get("/api/limited").header("X-Forwarded-For", "10.10.10.10"))
+        mockMvc.perform(get("/api/limited/token-bucket").header("X-Forwarded-For", "10.10.10.10"))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/api/limited").header("X-Forwarded-For", "10.10.10.10"))
+        mockMvc.perform(get("/api/limited/token-bucket").header("X-Forwarded-For", "10.10.10.10"))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/api/limited").header("X-Forwarded-For", "10.10.10.10"))
+        mockMvc.perform(get("/api/limited/token-bucket").header("X-Forwarded-For", "10.10.10.10"))
                 .andExpect(status().isTooManyRequests());
     }
 }

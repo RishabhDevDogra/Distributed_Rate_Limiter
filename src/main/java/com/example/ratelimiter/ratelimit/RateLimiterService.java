@@ -1,6 +1,10 @@
 package com.example.ratelimiter.ratelimit;
 
 public interface RateLimiterService {
-    RateLimitDecision evaluate(String key);
+    default RateLimitDecision evaluate(String key) {
+        return evaluate(key, null);
+    }
+
+    RateLimitDecision evaluate(String key, LimiterStrategyType strategyType);
 }
 

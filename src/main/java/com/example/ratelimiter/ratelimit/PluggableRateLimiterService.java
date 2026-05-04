@@ -21,8 +21,8 @@ public class PluggableRateLimiterService implements RateLimiterService {
     }
 
     @Override
-    public RateLimitDecision evaluate(String key) {
-        LimiterStrategyType selectedType = properties.getStrategyType();
+    public RateLimitDecision evaluate(String key, LimiterStrategyType strategyType) {
+        LimiterStrategyType selectedType = strategyType == null ? properties.getStrategyType() : strategyType;
         LimiterStrategy strategy = strategies.get(selectedType);
         if (strategy == null) {
             throw new IllegalStateException("No limiter strategy registered for: " + selectedType);

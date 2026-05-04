@@ -57,10 +57,12 @@ public class RateLimitFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+        String path = request.getRequestURI();
         String clientId = clientKeyResolver.resolveClientId(request);
-        String key = clientId + "|" + request.getMethod() + "|" + request.getRequestURI();
+        String key = clientId + "|" + request.getMethod() + "|" + path;
+        LimiterStrategyType strategyType = resolveStrategyType(path);
 
-        RateLimitDecision decision = limiterService.evaluate(key);
+        RateLimitDecision decision = limiterService.evaluate(key, strategyType);
         response.setHeader("X-RateLimit-Limit", String.valueOf(decision.limit()));
         response.setHeader("X-RateLimit-Remaining", String.valueOf(decision.remaining()));
         response.setHeader("X-RateLimit-Reset", String.valueOf(decision.resetEpochSeconds()));
@@ -74,6 +76,27 @@ public class RateLimitFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private LimiterStrategyType resolveStrategyType(String path) {
+        if (path == null) {
+            return null;
+        }
+
+        if (path.startsWith("/api/limited/token-bucket")) {
+            return LimiterStrategyType.TOKEN_BUCKET;
+        }
+        if (path.startsWith("/api/limited/fixed-window")) {
+            return LimiterStrategyType.FIXED_WINDOW;
+        }
+        if (path.startsWith("/api/limited/sliding-window")) {
+            return LimiterStrategyType.SLIDING_WINDOW;
+        }
+        if (path.startsWith("/api/limited/leaky-bucket")) {
+            return LimiterStrategyType.LEAKY_BUCKET;
+        }
+
+        return null;
     }
 
     private boolean matches(Iterable<String> patterns, String path) {
