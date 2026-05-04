@@ -7,13 +7,18 @@ import java.util.concurrent.ConcurrentMap;
 import org.springframework.stereotype.Service;
 
 @Service
-public class InMemoryFixedWindowRateLimiter implements RateLimiterService {
+public class InMemoryFixedWindowRateLimiter implements LimiterStrategy {
 
     private final RateLimiterProperties properties;
     private final ConcurrentMap<String, CounterWindow> counters = new ConcurrentHashMap<>();
 
     public InMemoryFixedWindowRateLimiter(RateLimiterProperties properties) {
         this.properties = properties;
+    }
+
+    @Override
+    public LimiterStrategyType type() {
+        return LimiterStrategyType.FIXED_WINDOW;
     }
 
     @Override

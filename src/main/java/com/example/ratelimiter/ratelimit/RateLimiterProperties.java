@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "ratelimiter")
 public class RateLimiterProperties {
     private boolean enabled = true;
+    private LimiterStrategyType strategyType = LimiterStrategyType.FIXED_WINDOW;
     private int limit = 5;
     private int windowSeconds = 60;
     private List<String> includePaths = new ArrayList<>(List.of("/api/**"));
@@ -28,6 +29,14 @@ public class RateLimiterProperties {
 
     public int getLimit() {
         return limit;
+    }
+
+    public LimiterStrategyType getStrategyType() {
+        return strategyType;
+    }
+
+    public void setStrategyType(LimiterStrategyType strategyType) {
+        this.strategyType = strategyType;
     }
 
     public void setLimit(int limit) {
