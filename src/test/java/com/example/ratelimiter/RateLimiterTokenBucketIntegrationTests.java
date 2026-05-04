@@ -1,0 +1,51 @@
+package com.example.ratelimiter;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.example.ratelimiter.ratelimit.InMemoryTokenBucketRateLimiter;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@TestPropertySource(properties = {
+        "ratelimiter.enabled=true",
+        "ratelimiter.strategy-type=token-bucket",
+        "ratelimiter.limit=2",
+        "ratelimiter.window-seconds=60",
+        "ratelimiter.include-paths=/api/**",
+        "ratelimiter.exclude-paths=/api/public,/test,/swagger-ui/**,/v3/api-docs/**,/favicon.ico"
+})
+class RateLimiterTokenBucketIntegrationTests {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private InMemoryTokenBucketRateLimiter limiter;
+
+    @BeforeEach
+    void clearState() {
+        limiter.clearAll();
+    }
+
+    @Test
+    void tokenBucketStrategyIsAppliedViaConfiguration() throws Exception {
+        mockMvc.perform(get("/api/limited").header("X-Forwarded-For", "10.10.10.10"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/limited").header("X-Forwarded-For", "10.10.10.10"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/limited").header("X-Forwarded-For", "10.10.10.10"))
+                .andExpect(status().isTooManyRequests());
+    }
+}
+
