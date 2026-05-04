@@ -18,6 +18,7 @@ import com.example.ratelimiter.ratelimit.InMemoryFixedWindowRateLimiter;
 @AutoConfigureMockMvc
 @TestPropertySource(properties = {
         "ratelimiter.enabled=true",
+        "ratelimiter.strategy-type=fixed-window",
         "ratelimiter.limit=2",
         "ratelimiter.window-seconds=60",
         "ratelimiter.include-paths=/api/**",
