@@ -1,4 +1,4 @@
-package com.example.ratelimiter.controller;
+package com.example.ratelimiter.web.controller;
 
 import java.time.Instant;
 
@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api")
 @Tag(name = "Rate Limiter", description = "Algorithm endpoints and sample API routes")
-public class ApiController {
+public class RateLimitController {
 
     @GetMapping("/public")
     @Operation(summary = "Public endpoint", description = "No rate limiting is applied to this route")

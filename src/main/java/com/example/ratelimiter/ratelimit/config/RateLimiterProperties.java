@@ -1,9 +1,11 @@
-package com.example.ratelimiter.ratelimit;
+package com.example.ratelimiter.ratelimit.config;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import com.example.ratelimiter.ratelimit.strategy.LimiterStrategyType;
 
 @ConfigurationProperties(prefix = "ratelimiter")
 public class RateLimiterProperties {
@@ -67,4 +69,5 @@ public class RateLimiterProperties {
         this.excludePaths = excludePaths;
     }
 }
+
 

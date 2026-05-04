@@ -1,4 +1,4 @@
-package com.example.ratelimiter.ratelimit;
+package com.example.ratelimiter.ratelimit.strategy;
 
 public enum LimiterStrategyType {
     FIXED_WINDOW,
@@ -6,4 +6,5 @@ public enum LimiterStrategyType {
     SLIDING_WINDOW,
     LEAKY_BUCKET
 }
+
 

@@ -1,9 +1,11 @@
-package com.example.ratelimiter.ratelimit;
+package com.example.ratelimiter.ratelimit.strategy.inmemory;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+
+import com.example.ratelimiter.ratelimit.config.RateLimiterProperties;
 
 class InMemoryStrategyAlgorithmsTests {
 
@@ -55,4 +57,5 @@ class InMemoryStrategyAlgorithmsTests {
         assertTrue(limiter.evaluate(key).allowed());
     }
 }
+
 

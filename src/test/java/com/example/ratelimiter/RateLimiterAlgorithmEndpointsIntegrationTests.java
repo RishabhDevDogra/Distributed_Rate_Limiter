@@ -11,10 +11,10 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.example.ratelimiter.ratelimit.InMemoryFixedWindowRateLimiter;
-import com.example.ratelimiter.ratelimit.InMemoryLeakyBucketRateLimiter;
-import com.example.ratelimiter.ratelimit.InMemorySlidingWindowRateLimiter;
-import com.example.ratelimiter.ratelimit.InMemoryTokenBucketRateLimiter;
+import com.example.ratelimiter.ratelimit.strategy.inmemory.InMemoryFixedWindowRateLimiter;
+import com.example.ratelimiter.ratelimit.strategy.inmemory.InMemoryLeakyBucketRateLimiter;
+import com.example.ratelimiter.ratelimit.strategy.inmemory.InMemorySlidingWindowRateLimiter;
+import com.example.ratelimiter.ratelimit.strategy.inmemory.InMemoryTokenBucketRateLimiter;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -24,7 +24,7 @@ import com.example.ratelimiter.ratelimit.InMemoryTokenBucketRateLimiter;
         "ratelimiter.limit=2",
         "ratelimiter.window-seconds=60",
         "ratelimiter.include-paths=/api/**",
-        "ratelimiter.exclude-paths=/api/public,/test,/swagger-ui/**,/v3/api-docs/**,/favicon.ico"
+        "ratelimiter.exclude-paths=/api/public,/health,/test,/swagger-ui/**,/v3/api-docs/**,/favicon.ico"
 })
 class RateLimiterAlgorithmEndpointsIntegrationTests {
 

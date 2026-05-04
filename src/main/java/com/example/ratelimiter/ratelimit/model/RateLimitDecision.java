@@ -1,4 +1,4 @@
-package com.example.ratelimiter.ratelimit;
+package com.example.ratelimiter.ratelimit.model;
 
 public record RateLimitDecision(
         boolean allowed,
@@ -7,4 +7,5 @@ public record RateLimitDecision(
         long resetEpochSeconds,
         long retryAfterSeconds) {
 }
+
 
