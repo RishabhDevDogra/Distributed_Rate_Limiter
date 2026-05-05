@@ -1,4 +1,4 @@
-package com.example.ratelimiter.strategy.inmemory;
+package com.example.ratelimiter.strategy.algorithm;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import com.example.ratelimiter.config.RateLimiterProperties;
 import com.example.ratelimiter.service.RedisCircuitBreakerService;
 
-class InMemoryStrategyAlgorithmsTests {
+class AlgorithmRateLimiterTests {
 
     @Test
     void tokenBucketRefillsAfterDelay() throws Exception {
@@ -16,7 +16,7 @@ class InMemoryStrategyAlgorithmsTests {
         properties.setLimit(2);
         properties.setWindowSeconds(1);
 
-        InMemoryTokenBucketRateLimiter limiter = new InMemoryTokenBucketRateLimiter(
+        TokenBucketRateLimiter limiter = new TokenBucketRateLimiter(
                 properties,
                 null,
                 new RedisCircuitBreakerService(properties));
@@ -36,7 +36,7 @@ class InMemoryStrategyAlgorithmsTests {
         properties.setLimit(2);
         properties.setWindowSeconds(2);
 
-        InMemorySlidingWindowRateLimiter limiter = new InMemorySlidingWindowRateLimiter(properties);
+        SlidingWindowRateLimiter limiter = new SlidingWindowRateLimiter(properties);
         String key = "sliding-window-key";
 
         assertTrue(limiter.evaluate(key).allowed());
@@ -50,7 +50,7 @@ class InMemoryStrategyAlgorithmsTests {
         properties.setLimit(2);
         properties.setWindowSeconds(1);
 
-        InMemoryLeakyBucketRateLimiter limiter = new InMemoryLeakyBucketRateLimiter(properties);
+        LeakyBucketRateLimiter limiter = new LeakyBucketRateLimiter(properties);
         String key = "leaky-bucket-key";
 
         assertTrue(limiter.evaluate(key).allowed());
@@ -61,6 +61,7 @@ class InMemoryStrategyAlgorithmsTests {
         assertTrue(limiter.evaluate(key).allowed());
     }
 }
+
 
 
 

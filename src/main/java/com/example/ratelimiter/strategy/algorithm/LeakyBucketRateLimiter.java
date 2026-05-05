@@ -1,4 +1,4 @@
-package com.example.ratelimiter.strategy.inmemory;
+package com.example.ratelimiter.strategy.algorithm;
 
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,12 +12,12 @@ import com.example.ratelimiter.strategy.LimiterStrategy;
 import com.example.ratelimiter.strategy.LimiterStrategyType;
 
 @Service
-public class InMemoryLeakyBucketRateLimiter implements LimiterStrategy {
+public class LeakyBucketRateLimiter implements LimiterStrategy {
 
     private final RateLimiterProperties properties;
     private final ConcurrentMap<String, LeakyState> buckets = new ConcurrentHashMap<>();
 
-    public InMemoryLeakyBucketRateLimiter(RateLimiterProperties properties) {
+    public LeakyBucketRateLimiter(RateLimiterProperties properties) {
         this.properties = properties;
     }
 
@@ -87,6 +87,7 @@ public class InMemoryLeakyBucketRateLimiter implements LimiterStrategy {
     private record LeakyResult(boolean allowed, int remaining, long resetEpochSeconds, long retryAfterSeconds) {
     }
 }
+
 
 
 

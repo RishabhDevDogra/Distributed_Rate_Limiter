@@ -1,4 +1,4 @@
-package com.example.ratelimiter.strategy.inmemory;
+package com.example.ratelimiter.strategy.algorithm;
 
 import java.time.Instant;
 import java.util.List;
@@ -20,7 +20,7 @@ import com.example.ratelimiter.strategy.LimiterStrategy;
 import com.example.ratelimiter.strategy.LimiterStrategyType;
 
 @Service
-public class InMemoryTokenBucketRateLimiter implements LimiterStrategy {
+public class TokenBucketRateLimiter implements LimiterStrategy {
 
     private static final RedisScript<List> TOKEN_BUCKET_SCRIPT = buildScript();
 
@@ -29,7 +29,7 @@ public class InMemoryTokenBucketRateLimiter implements LimiterStrategy {
     private final RedisCircuitBreakerService circuitBreaker;
     private final ConcurrentMap<String, BucketState> buckets = new ConcurrentHashMap<>();
 
-    public InMemoryTokenBucketRateLimiter(
+    public TokenBucketRateLimiter(
             RateLimiterProperties properties,
             StringRedisTemplate redisTemplate,
             RedisCircuitBreakerService circuitBreaker) {
@@ -214,6 +214,7 @@ public class InMemoryTokenBucketRateLimiter implements LimiterStrategy {
     private record BucketResult(boolean allowed, int remaining, long resetEpochSeconds, long retryAfterSeconds) {
     }
 }
+
 
 
 

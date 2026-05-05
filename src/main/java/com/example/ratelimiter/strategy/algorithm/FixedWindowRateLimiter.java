@@ -1,4 +1,4 @@
-package com.example.ratelimiter.strategy.inmemory;
+package com.example.ratelimiter.strategy.algorithm;
 
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,12 +12,12 @@ import com.example.ratelimiter.strategy.LimiterStrategy;
 import com.example.ratelimiter.strategy.LimiterStrategyType;
 
 @Service
-public class InMemoryFixedWindowRateLimiter implements LimiterStrategy {
+public class FixedWindowRateLimiter implements LimiterStrategy {
 
     private final RateLimiterProperties properties;
     private final ConcurrentMap<String, CounterWindow> counters = new ConcurrentHashMap<>();
 
-    public InMemoryFixedWindowRateLimiter(RateLimiterProperties properties) {
+    public FixedWindowRateLimiter(RateLimiterProperties properties) {
         this.properties = properties;
     }
 
@@ -64,6 +64,7 @@ public class InMemoryFixedWindowRateLimiter implements LimiterStrategy {
         }
     }
 }
+
 
 
 

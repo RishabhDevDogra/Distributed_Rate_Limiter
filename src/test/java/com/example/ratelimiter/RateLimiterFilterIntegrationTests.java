@@ -12,7 +12,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.example.ratelimiter.strategy.inmemory.InMemoryFixedWindowRateLimiter;
+import com.example.ratelimiter.strategy.algorithm.FixedWindowRateLimiter;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,7 +30,7 @@ class RateLimiterFilterIntegrationTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private InMemoryFixedWindowRateLimiter limiter;
+    private FixedWindowRateLimiter limiter;
 
     @BeforeEach
     void resetLimiter() {

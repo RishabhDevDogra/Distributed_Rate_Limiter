@@ -11,10 +11,10 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.example.ratelimiter.strategy.inmemory.InMemoryFixedWindowRateLimiter;
-import com.example.ratelimiter.strategy.inmemory.InMemoryLeakyBucketRateLimiter;
-import com.example.ratelimiter.strategy.inmemory.InMemorySlidingWindowRateLimiter;
-import com.example.ratelimiter.strategy.inmemory.InMemoryTokenBucketRateLimiter;
+import com.example.ratelimiter.strategy.algorithm.FixedWindowRateLimiter;
+import com.example.ratelimiter.strategy.algorithm.LeakyBucketRateLimiter;
+import com.example.ratelimiter.strategy.algorithm.SlidingWindowRateLimiter;
+import com.example.ratelimiter.strategy.algorithm.TokenBucketRateLimiter;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,16 +32,16 @@ class RateLimiterAlgorithmEndpointsIntegrationTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private InMemoryFixedWindowRateLimiter fixedWindow;
+    private FixedWindowRateLimiter fixedWindow;
 
     @Autowired
-    private InMemoryTokenBucketRateLimiter tokenBucket;
+    private TokenBucketRateLimiter tokenBucket;
 
     @Autowired
-    private InMemorySlidingWindowRateLimiter slidingWindow;
+    private SlidingWindowRateLimiter slidingWindow;
 
     @Autowired
-    private InMemoryLeakyBucketRateLimiter leakyBucket;
+    private LeakyBucketRateLimiter leakyBucket;
 
     @BeforeEach
     void clearAllState() {

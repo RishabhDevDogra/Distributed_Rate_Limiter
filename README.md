@@ -18,6 +18,7 @@ This project mirrors the architecture of the C# repo (`DistributedRateLimiter`) 
 - Maven artifact renamed to `distributed-rate-limiter`
 - In-memory algorithms available: `fixed-window`, `token-bucket`, `sliding-window`, `leaky-bucket`
 - Token bucket supports Redis-first execution with Lua atomic updates and in-memory fallback
+- Algorithms stay consistent across backends; only state storage changes (Redis primary, in-memory fallback)
 - Endpoint-driven algorithm routing under `/api/limited/*` to match the .NET workflow
 - Exclusions in place for `/health/**` and `/api/metrics` plus Swagger docs
 - 429 responses include `Retry-After` and `X-RateLimit-*` headers
@@ -79,7 +80,7 @@ spring.data.redis.port=6379
 - `com.example.ratelimiter.filter` - request-level rate limit filter and client resolver
 - `com.example.ratelimiter.service` - service orchestration (`RateLimiterService`, `PluggableRateLimiterService`)
 - `com.example.ratelimiter.strategy` - strategy contracts/enums
-- `com.example.ratelimiter.strategy.inmemory` - in-memory algorithm implementations
+- `com.example.ratelimiter.strategy.algorithm` - algorithm-first implementations (Redis primary + in-memory fallback where configured)
 - `com.example.ratelimiter.config` and `.model` - shared properties and decision models
 
 ## Run

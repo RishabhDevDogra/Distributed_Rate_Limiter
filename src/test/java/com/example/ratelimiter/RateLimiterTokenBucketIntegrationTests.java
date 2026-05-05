@@ -11,7 +11,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.example.ratelimiter.strategy.inmemory.InMemoryTokenBucketRateLimiter;
+import com.example.ratelimiter.strategy.algorithm.TokenBucketRateLimiter;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -29,7 +29,7 @@ class RateLimiterTokenBucketIntegrationTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private InMemoryTokenBucketRateLimiter limiter;
+    private TokenBucketRateLimiter limiter;
 
     @BeforeEach
     void clearState() {
