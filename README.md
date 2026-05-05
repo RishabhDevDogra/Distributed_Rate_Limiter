@@ -1,6 +1,27 @@
 # DistributedRateLimiter (Java / Spring Boot)
 
-Distributed API rate limiter for Java services with four algorithms, Redis-backed atomic Lua execution, and automatic in-memory fallback through a circuit breaker.
+![Java 21](https://img.shields.io/badge/Java-21-blue)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.6-brightgreen)
+![Redis](https://img.shields.io/badge/Redis-7%2B-red)
+![Maven](https://img.shields.io/badge/Build-Maven-orange)
+
+Standalone Java API rate limiter with four algorithms, Redis-backed atomic Lua execution, and automatic in-memory fallback through a circuit breaker.
+
+This repository is a standalone Java project.
+
+## Table of Contents
+
+- [Highlights](#highlights)
+- [API Endpoints](#api-endpoints)
+- [Architecture](#architecture)
+- [Configuration](#configuration)
+- [Local Setup](#local-setup)
+- [Quick Verification](#quick-verification)
+- [Benchmarking](#benchmarking)
+- [Performance Results](#performance-results)
+- [Project Structure](#project-structure)
+- [Troubleshooting](#troubleshooting)
+- [Status](#status)
 
 ## Highlights
 
@@ -130,6 +151,8 @@ curl -s http://localhost:8080/api/metrics
 ## Benchmarking
 
 Harness: `benchmarks/load_benchmark.py`
+
+See also: `benchmarks/README.md` and `benchmarks/results/`.
 
 Example single run:
 
