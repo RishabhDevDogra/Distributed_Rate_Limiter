@@ -8,7 +8,7 @@ This project mirrors the architecture of the C# repo (`DistributedRateLimiter`) 
 - [x] Phase 1: Local in-memory rate limiter (single instance)
 - [x] Phase 2A: Pluggable limiter architecture
 - [x] Phase 2B: In-memory multi-algorithm endpoints
-- [ ] Phase 2C: Redis-backed limiter (shared counters)
+- [x] Phase 2C: Redis-backed token bucket with fallback
 - [ ] Phase 3: Distributed hardening (multi-instance, resilience, metrics)
 
 ## Current Status (Phase 2B)
@@ -17,6 +17,7 @@ This project mirrors the architecture of the C# repo (`DistributedRateLimiter`) 
 - Spring app entrypoint renamed to `DistributedRateLimiterApplication`
 - Maven artifact renamed to `distributed-rate-limiter`
 - In-memory algorithms available: `fixed-window`, `token-bucket`, `sliding-window`, `leaky-bucket`
+- Token bucket supports Redis-first execution with Lua atomic updates and in-memory fallback
 - Endpoint-driven algorithm routing under `/api/limited/*` to match the .NET workflow
 - Exclusions in place for `/health/**` and `/api/metrics` plus Swagger docs
 - 429 responses include `Retry-After` and `X-RateLimit-*` headers
@@ -53,6 +54,21 @@ ratelimiter.limit=5
 ratelimiter.window-seconds=60
 ratelimiter.include-paths=/api/**
 ratelimiter.exclude-paths=/health/**,/api/metrics,/swagger-ui/**,/v3/api-docs/**,/favicon.ico
+ratelimiter.redis.enabled=false
+ratelimiter.redis.fallback-enabled=true
+ratelimiter.redis.key-prefix=ratelimiter
+```
+
+## Redis Setup (Token Bucket)
+
+```bash
+brew services start redis
+```
+
+```properties
+ratelimiter.redis.enabled=true
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
 ```
 
 ## Code Organization

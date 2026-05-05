@@ -13,6 +13,7 @@ public class RateLimiterProperties {
     private LimiterStrategyType strategyType = LimiterStrategyType.FIXED_WINDOW;
     private int limit = 5;
     private int windowSeconds = 60;
+    private Redis redis = new Redis();
     private List<String> includePaths = new ArrayList<>(List.of("/api/**"));
     private List<String> excludePaths = new ArrayList<>(List.of(
             "/health/**",
@@ -53,6 +54,14 @@ public class RateLimiterProperties {
         this.windowSeconds = windowSeconds;
     }
 
+    public Redis getRedis() {
+        return redis;
+    }
+
+    public void setRedis(Redis redis) {
+        this.redis = redis;
+    }
+
     public List<String> getIncludePaths() {
         return includePaths;
     }
@@ -67,6 +76,36 @@ public class RateLimiterProperties {
 
     public void setExcludePaths(List<String> excludePaths) {
         this.excludePaths = excludePaths;
+    }
+
+    public static class Redis {
+        private boolean enabled = false;
+        private boolean fallbackEnabled = true;
+        private String keyPrefix = "ratelimiter";
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean isFallbackEnabled() {
+            return fallbackEnabled;
+        }
+
+        public void setFallbackEnabled(boolean fallbackEnabled) {
+            this.fallbackEnabled = fallbackEnabled;
+        }
+
+        public String getKeyPrefix() {
+            return keyPrefix;
+        }
+
+        public void setKeyPrefix(String keyPrefix) {
+            this.keyPrefix = keyPrefix;
+        }
     }
 }
 

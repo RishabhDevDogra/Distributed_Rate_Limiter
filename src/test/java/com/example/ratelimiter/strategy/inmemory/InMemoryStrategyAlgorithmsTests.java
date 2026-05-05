@@ -15,7 +15,7 @@ class InMemoryStrategyAlgorithmsTests {
         properties.setLimit(2);
         properties.setWindowSeconds(1);
 
-        InMemoryTokenBucketRateLimiter limiter = new InMemoryTokenBucketRateLimiter(properties);
+        InMemoryTokenBucketRateLimiter limiter = new InMemoryTokenBucketRateLimiter(properties, null);
         String key = "token-bucket-key";
 
         assertTrue(limiter.evaluate(key).allowed());
