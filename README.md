@@ -5,7 +5,7 @@
 ![Redis](https://img.shields.io/badge/Redis-7%2B-red)
 ![Maven](https://img.shields.io/badge/Build-Maven-orange)
 
-High-performance distributed API rate limiter in Java (Spring Boot) achieving 10,000+ req/sec throughput with <1ms p99 latency, 99.99% uptime SLA, and <500ms failover during outages. Implements four rate-limiting algorithms with atomic Lua-scripted Redis operations and automatic in-memory fallback via circuit breaker pattern.
+Distributed API rate limiter in Java (Spring Boot) with four algorithms, atomic Redis Lua updates, and circuit-breaker-based in-memory fallback. Local benchmark evidence in this repository shows ~5.2k-5.8k req/sec with p99 ~74-85 ms (20,000 requests, concurrency 200).
 
 This repository is a standalone Java project.
 
