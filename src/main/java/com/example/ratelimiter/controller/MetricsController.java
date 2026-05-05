@@ -21,7 +21,7 @@ public class MetricsController {
     }
 
     @GetMapping("/metrics")
-    @Operation(summary = "Rate limiter metrics", description = "View request statistics per client (allowed/blocked counts)")
+    @Operation(summary = "Rate limiter metrics - View request statistics per client (allowed/blocked counts)", description = "Metrics endpoint for per-client allow/deny counters")
     public RateLimiterMetricsService.MetricsSnapshot metrics() {
         return metricsService.snapshot();
     }

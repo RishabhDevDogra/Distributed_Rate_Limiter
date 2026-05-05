@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class HealthController {
 
     @GetMapping("/health/live")
-    @Operation(summary = "App liveness check", description = "Is the application process running?")
+    @Operation(summary = "App liveness check - Is the application process running?", description = "Liveness probe endpoint")
     public Map<String, Object> live() {
         return Map.of(
                 "status", "UP",
@@ -23,7 +23,7 @@ public class HealthController {
     }
 
     @GetMapping("/health/ready")
-    @Operation(summary = "App readiness check", description = "Is the application ready to serve traffic? (checks Redis)")
+    @Operation(summary = "App readiness check - Is the application ready to serve traffic? (checks Redis)", description = "Readiness probe endpoint")
     public Map<String, Object> ready() {
         return Map.of(
                 "status", "UP",
@@ -33,7 +33,7 @@ public class HealthController {
     }
 
     @GetMapping("/health")
-    @Operation(summary = "Detailed health check", description = "Full diagnostics for all components (Redis, fallback metrics)")
+    @Operation(summary = "Detailed health check - Full diagnostics for all components (Redis, fallback metrics)", description = "Detailed system diagnostics endpoint")
     public Map<String, Object> health() {
         return Map.of(
                 "status", "UP",
