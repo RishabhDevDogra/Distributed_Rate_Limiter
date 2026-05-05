@@ -2,6 +2,8 @@ package com.example.ratelimiter.strategy.inmemory;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -13,6 +15,7 @@ import org.springframework.data.redis.core.script.RedisScript;
 
 import com.example.ratelimiter.config.RateLimiterProperties;
 import com.example.ratelimiter.model.RateLimitDecision;
+import com.example.ratelimiter.service.RedisCircuitBreakerService;
 import com.example.ratelimiter.strategy.LimiterStrategy;
 import com.example.ratelimiter.strategy.LimiterStrategyType;
 
@@ -23,11 +26,16 @@ public class InMemoryTokenBucketRateLimiter implements LimiterStrategy {
 
     private final RateLimiterProperties properties;
     private final StringRedisTemplate redisTemplate;
+    private final RedisCircuitBreakerService circuitBreaker;
     private final ConcurrentMap<String, BucketState> buckets = new ConcurrentHashMap<>();
 
-    public InMemoryTokenBucketRateLimiter(RateLimiterProperties properties, StringRedisTemplate redisTemplate) {
+    public InMemoryTokenBucketRateLimiter(
+            RateLimiterProperties properties,
+            StringRedisTemplate redisTemplate,
+            RedisCircuitBreakerService circuitBreaker) {
         this.properties = properties;
         this.redisTemplate = redisTemplate;
+        this.circuitBreaker = circuitBreaker;
     }
 
     @Override
@@ -38,9 +46,23 @@ public class InMemoryTokenBucketRateLimiter implements LimiterStrategy {
     @Override
     public RateLimitDecision evaluate(String key) {
         if (properties.getRedis().isEnabled() && redisTemplate != null) {
+            if (!circuitBreaker.allowRequest()) {
+                if (!properties.getRedis().isFallbackEnabled()) {
+                    throw new IllegalStateException("Redis circuit breaker is OPEN");
+                }
+                return evaluateInMemory(key);
+            }
+
             try {
-                return evaluateRedis(key);
+                int timeoutMs = Math.max(properties.getRedis().getTimeoutMs(), 1);
+                RateLimitDecision decision = CompletableFuture
+                        .supplyAsync(() -> evaluateRedis(key))
+                        .orTimeout(timeoutMs, TimeUnit.MILLISECONDS)
+                        .join();
+                circuitBreaker.recordSuccess();
+                return decision;
             } catch (RuntimeException ex) {
+                circuitBreaker.recordFailure();
                 if (!properties.getRedis().isFallbackEnabled()) {
                     throw ex;
                 }

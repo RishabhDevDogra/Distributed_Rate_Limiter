@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ratelimiter.config.RateLimiterProperties;
+import com.example.ratelimiter.service.RedisCircuitBreakerService;
 import com.example.ratelimiter.service.RedisHealthService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,10 +18,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class HealthController {
 
     private final RedisHealthService redisHealthService;
+    private final RedisCircuitBreakerService circuitBreakerService;
     private final RateLimiterProperties properties;
 
-    public HealthController(RedisHealthService redisHealthService, RateLimiterProperties properties) {
+    public HealthController(
+            RedisHealthService redisHealthService,
+            RedisCircuitBreakerService circuitBreakerService,
+            RateLimiterProperties properties) {
         this.redisHealthService = redisHealthService;
+        this.circuitBreakerService = circuitBreakerService;
         this.properties = properties;
     }
 
@@ -43,6 +49,7 @@ public class HealthController {
         return Map.of(
                 "status", status,
                 "redis", redisEnabled ? (redisHealthy ? "UP" : "DOWN") : "DISABLED",
+                "circuitBreaker", circuitBreakerService.getState().name(),
                 "fallback", properties.getRedis().isFallbackEnabled() ? "in-memory" : "disabled",
                 "timestamp", Instant.now().toString());
     }
@@ -58,6 +65,7 @@ public class HealthController {
                 "service", "DistributedRateLimiter",
                 "mode", redisEnabled && redisHealthy ? "redis-primary" : "in-memory-fallback",
                 "redis", redisEnabled ? (redisHealthy ? "UP" : "DOWN") : "DISABLED",
+                "circuitBreaker", circuitBreakerService.getState().name(),
                 "timestamp", Instant.now().toString());
     }
 }

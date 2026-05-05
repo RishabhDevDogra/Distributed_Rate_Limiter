@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.example.ratelimiter.config.RateLimiterProperties;
+import com.example.ratelimiter.service.RedisCircuitBreakerService;
 
 class InMemoryStrategyAlgorithmsTests {
 
@@ -15,7 +16,10 @@ class InMemoryStrategyAlgorithmsTests {
         properties.setLimit(2);
         properties.setWindowSeconds(1);
 
-        InMemoryTokenBucketRateLimiter limiter = new InMemoryTokenBucketRateLimiter(properties, null);
+        InMemoryTokenBucketRateLimiter limiter = new InMemoryTokenBucketRateLimiter(
+                properties,
+                null,
+                new RedisCircuitBreakerService(properties));
         String key = "token-bucket-key";
 
         assertTrue(limiter.evaluate(key).allowed());

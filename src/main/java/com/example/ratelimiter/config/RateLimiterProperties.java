@@ -82,6 +82,8 @@ public class RateLimiterProperties {
         private boolean enabled = false;
         private boolean fallbackEnabled = true;
         private String keyPrefix = "ratelimiter";
+        private int timeoutMs = 500;
+        private int circuitOpenSeconds = 5;
 
         public boolean isEnabled() {
             return enabled;
@@ -105,6 +107,22 @@ public class RateLimiterProperties {
 
         public void setKeyPrefix(String keyPrefix) {
             this.keyPrefix = keyPrefix;
+        }
+
+        public int getTimeoutMs() {
+            return timeoutMs;
+        }
+
+        public void setTimeoutMs(int timeoutMs) {
+            this.timeoutMs = timeoutMs;
+        }
+
+        public int getCircuitOpenSeconds() {
+            return circuitOpenSeconds;
+        }
+
+        public void setCircuitOpenSeconds(int circuitOpenSeconds) {
+            this.circuitOpenSeconds = circuitOpenSeconds;
         }
     }
 }
