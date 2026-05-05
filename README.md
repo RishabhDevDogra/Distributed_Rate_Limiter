@@ -5,7 +5,9 @@
 ![Redis](https://img.shields.io/badge/Redis-7%2B-red)
 ![Maven](https://img.shields.io/badge/Build-Maven-orange)
 
-Distributed API rate limiter in Java (Spring Boot) with token bucket, fixed window, sliding window, and leaky bucket strategies. Uses atomic Redis Lua updates with circuit-breaker in-memory fallback, plus health/readiness/metrics and OpenAPI. Benchmarked locally at ~5.2k–5.8k req/sec (p99 ~74–85 ms).
+Distributed, fault-tolerant API rate limiter in Java (Spring Boot) with four algorithms, atomic Redis Lua updates, and circuit-breaker in-memory fallback.
+
+Benchmarked in this repository at ~5.2k-5.8k req/sec (20,000 requests, concurrency 200) with local-loopback p99 ~74-85 ms.
 
 ## Table of Contents
 
@@ -55,12 +57,12 @@ curl -s http://localhost:8080/api/metrics
 
 ## About This Project
 
-This project demonstrates how to build a distributed, fault-tolerant rate limiter in Java with strong consistency on the Redis path and graceful degradation when Redis is unavailable.
+This project demonstrates production-grade rate limiting patterns for Java services:
 
-- **Primary path:** Redis + Lua for atomic, race-condition-safe updates
-- **Resilience path:** circuit breaker + in-memory fallback
-- **Scope:** per-client key limiting across token bucket, fixed window, sliding window, and leaky bucket strategies
-- **Operational support:** health, readiness, metrics, and standard `X-RateLimit-*` headers
+- **Consistency:** Redis Lua scripts perform atomic check-and-update operations.
+- **Resilience:** Redis timeout + circuit breaker + in-memory fallback.
+- **Flexibility:** Token bucket, fixed window, sliding window, and leaky bucket.
+- **Observability:** health/readiness/metrics endpoints + standard `X-RateLimit-*` headers.
 
 ## API Endpoints
 
@@ -90,33 +92,27 @@ Distributed, fault-tolerant rate limiter with high availability and strong consi
 ```text
 Incoming Request
     ↓
-RateLimitFilter
-  • resolve client key
-  • map endpoint -> algorithm
+RateLimitFilter (resolve client key + endpoint strategy)
     ↓
-PluggableRateLimiterService
-  • dispatch to selected strategy
+PluggableRateLimiterService (dispatch algorithm)
     ↓
-Primary Path: Redis + Lua Script (atomic update)
-  • uses configured timeout (default: 500ms)
-  • on timeout/error/open breaker -> fallback path
+Redis ◄──→ Lua Script (atomic update)
+    │ (timeout: configured, default 500ms)
+    │ ✗ timeout/error/circuit-open
     ↓
-Fallback Path: Circuit Breaker -> In-Memory Strategy
+Circuit Breaker ◄──→ In-Memory Fallback
     ↓
-Response
-  • X-RateLimit-Limit / X-RateLimit-Remaining / X-RateLimit-Reset
-  • Retry-After (when blocked)
-  • HTTP 200 or HTTP 429
+X-RateLimit-* + Retry-After + HTTP 200/429
 ```
 
-**Guarantees (implementation-level):**
+**Implementation guarantees:**
 
-- ✅ **Atomic operations** - Lua scripts avoid race conditions on Redis updates
-- ✅ **Automatic failover** - circuit breaker routes traffic to fallback on Redis failures
-- ✅ **Thread-safe local fallback** - in-memory strategies use concurrent-safe structures
-- ✅ **Horizontal-readiness** - per-key isolation and Redis-backed distributed mode
+- ✅ **Atomic distributed updates** via Redis Lua scripts
+- ✅ **Automatic failover** to in-memory strategy on Redis failure
+- ✅ **Thread-safe fallback path** using concurrent in-memory state
+- ✅ **Per-key isolation** suitable for horizontally scaled services
 
-**Performance note:** benchmark evidence in this repository currently shows ~5.2k-5.8k RPS with local-loopback p99 in the ~74-85ms range (20000 requests, concurrency 200, local MacBook). Use dedicated load infrastructure before publishing stricter SLA claims.
+> Reviewer note: performance figures in this README come from committed local benchmark runs in this repository (`benchmarks/results/`) and are not cloud-SLA claims.
 
 ## Configuration
 
