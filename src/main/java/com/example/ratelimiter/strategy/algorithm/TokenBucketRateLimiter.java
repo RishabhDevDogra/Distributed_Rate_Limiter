@@ -2,8 +2,6 @@ package com.example.ratelimiter.strategy.algorithm;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -54,11 +52,8 @@ public class TokenBucketRateLimiter implements LimiterStrategy {
             }
 
             try {
-                int timeoutMs = Math.max(properties.getRedis().getTimeoutMs(), 1);
-                RateLimitDecision decision = CompletableFuture
-                        .supplyAsync(() -> evaluateRedis(key))
-                        .orTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-                        .join();
+                // Avoid per-request async future allocation/churn; rely on Redis/client timeout configuration.
+                RateLimitDecision decision = evaluateRedis(key);
                 circuitBreaker.recordSuccess();
                 return decision;
             } catch (RuntimeException ex) {

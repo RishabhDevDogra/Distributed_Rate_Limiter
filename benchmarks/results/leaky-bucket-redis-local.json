@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-05-05T07:13:43Z",
+  "url": "http://localhost:8080/api/limited/leaky-bucket",
+  "requests": 20000,
+  "concurrency": 200,
+  "duration_seconds": 3.7661,
+  "throughput_rps": 5310.6,
+  "success_count": 20000,
+  "status_counts": {
+    "200": 20000
+  },
+  "latency_ms": {
+    "avg": 22.77,
+    "p50": 22.687,
+    "p95": 57.701,
+    "p99": 74.137,
+    "max": 130.949
+  }
+}

@@ -299,15 +299,35 @@ ratelimiter.redis.timeout-ms=100
 | `RateLimiterTokenBucketIntegrationTests` | 1 | token bucket via HTTP |
 | `DistributedRateLimiterApplicationTests` | 1 | Spring context loads |
 
-### Performance Benchmarks (Java / in-memory mode, MacBook, 3000 req × 100 concurrency)
+### Performance Benchmarks (Java, MacBook, 20000 req x 200 concurrency)
+
+#### In-memory mode (`redis=DISABLED`)
 
 | Endpoint | RPS | p50 ms | p95 ms | p99 ms | Success |
 | --- | --- | --- | --- | --- | --- |
-| fixed-window | 5,610 | 14.9 | 28.0 | 34.8 | 3000/3000 |
-| sliding-window | 5,727 | 1.9 | 21.3 | 29.5 | 3000/3000 |
-| leaky-bucket | 5,695 | 16.1 | 30.0 | 37.9 | 3000/3000 |
-| token-bucket | 4,973 | 18.0 | 37.2 | 53.7 | 3000/3000 |
+| token-bucket | 5,502.13 | 29.644 | 59.544 | 80.586 | 20000/20000 |
+| fixed-window | 5,736.00 | 21.978 | 56.881 | 74.896 | 20000/20000 |
+| sliding-window | 5,691.29 | 28.200 | 58.381 | 75.653 | 20000/20000 |
+| leaky-bucket | 5,779.19 | 22.222 | 56.625 | 74.146 | 20000/20000 |
 
-> Environment: Java 21, Spring Boot 4.0.6, Tomcat, in-memory fallback (no Redis), Apple Silicon MacBook.
-> Redis path will yield significantly lower latency — the .NET baseline (`<1ms p99`) was measured with local Redis on an 8-core VM.
+#### Redis-primary mode (`redis=UP`, `mode=redis-primary`)
+
+| Endpoint | RPS | p50 ms | p95 ms | p99 ms | Success |
+| --- | --- | --- | --- | --- | --- |
+| token-bucket | 5,310.93 | 35.637 | 65.571 | 85.271 | 20000/20000 |
+| fixed-window | 5,342.61 | 26.866 | 62.281 | 82.823 | 20000/20000 |
+| sliding-window | 5,267.40 | 25.795 | 59.806 | 76.378 | 20000/20000 |
+| leaky-bucket | 5,310.60 | 22.687 | 57.701 | 74.137 | 20000/20000 |
+
+#### Redis vs In-memory delta (p99)
+
+| Endpoint | In-memory p99 ms | Redis p99 ms | Delta |
+| --- | --- | --- | --- |
+| token-bucket | 80.586 | 85.271 | +4.685 |
+| fixed-window | 74.896 | 82.823 | +7.927 |
+| sliding-window | 75.653 | 76.378 | +0.725 |
+| leaky-bucket | 74.146 | 74.137 | -0.009 |
+
+> Environment: Java 21, Spring Boot 4.0.6, Tomcat, Apple Silicon MacBook.
+> Notes: values are local-loopback end-to-end latencies measured by the Python harness. Use a dedicated load generator host and larger runs for publishable SLA claims.
 

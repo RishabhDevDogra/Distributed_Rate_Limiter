@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-05-05T07:15:29Z",
+  "url": "http://localhost:8080/api/limited/sliding-window",
+  "requests": 20000,
+  "concurrency": 200,
+  "duration_seconds": 3.5141,
+  "throughput_rps": 5691.29,
+  "success_count": 20000,
+  "status_counts": {
+    "200": 20000
+  },
+  "latency_ms": {
+    "avg": 29.627,
+    "p50": 28.2,
+    "p95": 58.381,
+    "p99": 75.653,
+    "max": 127.99
+  }
+}

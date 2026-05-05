@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-05-05T07:13:32Z",
+  "url": "http://localhost:8080/api/limited/token-bucket",
+  "requests": 20000,
+  "concurrency": 200,
+  "duration_seconds": 3.7658,
+  "throughput_rps": 5310.93,
+  "success_count": 20000,
+  "status_counts": {
+    "200": 20000
+  },
+  "latency_ms": {
+    "avg": 37.417,
+    "p50": 35.637,
+    "p95": 65.571,
+    "p99": 85.271,
+    "max": 200.482
+  }
+}

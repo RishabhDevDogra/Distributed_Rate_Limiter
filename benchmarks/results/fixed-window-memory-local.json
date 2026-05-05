@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-05-05T07:15:25Z",
+  "url": "http://localhost:8080/api/limited/fixed-window",
+  "requests": 20000,
+  "concurrency": 200,
+  "duration_seconds": 3.4868,
+  "throughput_rps": 5736.0,
+  "success_count": 20000,
+  "status_counts": {
+    "200": 20000
+  },
+  "latency_ms": {
+    "avg": 22.89,
+    "p50": 21.978,
+    "p95": 56.881,
+    "p99": 74.896,
+    "max": 134.599
+  }
+}
