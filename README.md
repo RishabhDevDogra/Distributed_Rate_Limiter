@@ -5,12 +5,13 @@
 ![Redis](https://img.shields.io/badge/Redis-7%2B-red)
 ![Maven](https://img.shields.io/badge/Build-Maven-orange)
 
-Standalone Java API rate limiter with four algorithms, Redis-backed atomic Lua execution, and automatic in-memory fallback through a circuit breaker.
+High-performance distributed API rate limiter in Java with four algorithms, Redis-backed atomic Lua execution, and automatic in-memory fallback through a circuit breaker.
 
 This repository is a standalone Java project.
 
 ## Table of Contents
 
+- [Quick Start (2 minutes)](#quick-start-2-minutes)
 - [Highlights](#highlights)
 - [API Endpoints](#api-endpoints)
 - [Architecture](#architecture)
@@ -23,6 +24,27 @@ This repository is a standalone Java project.
 - [Troubleshooting](#troubleshooting)
 - [Status](#status)
 
+## Quick Start (2 minutes)
+
+```bash
+cd /Users/rishabh/IdeaProjects/ratelimiter
+
+# 1) Start Redis
+brew services start redis
+redis-cli ping
+
+# 2) Run app in Redis-primary mode
+./mvnw spring-boot:run -Dspring-boot.run.arguments="--ratelimiter.redis.enabled=true --spring.data.redis.host=127.0.0.1 --spring.data.redis.port=6379"
+```
+
+In another terminal:
+
+```bash
+curl -s http://localhost:8080/health
+curl -i http://localhost:8080/api/limited/token-bucket
+curl -s http://localhost:8080/api/metrics
+```
+
 ## Highlights
 
 - Four algorithm endpoints: token bucket, fixed window, sliding window, leaky bucket
@@ -32,6 +54,15 @@ This repository is a standalone Java project.
 - Standard rate-limit response headers: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`, `Retry-After`
 - Health + readiness + metrics endpoints for runtime visibility
 - Swagger/OpenAPI documentation
+
+## About This Project
+
+This project demonstrates how to build a distributed, fault-tolerant rate limiter in Java with strong consistency on the Redis path and graceful degradation when Redis is unavailable.
+
+- **Primary path:** Redis + Lua for atomic, race-condition-safe updates
+- **Resilience path:** circuit breaker + in-memory fallback
+- **Scope:** per-client key limiting across token bucket, fixed window, sliding window, and leaky bucket strategies
+- **Operational support:** health, readiness, metrics, and standard `X-RateLimit-*` headers
 
 ## API Endpoints
 
@@ -56,16 +87,32 @@ This repository is a standalone Java project.
 
 ## Architecture
 
+Distributed, fault-tolerant rate limiter with high availability and strong consistency guarantees:
+
 ```text
-Incoming request
-  -> RateLimitFilter (client key + endpoint algorithm)
-  -> PluggableRateLimiterService (strategy dispatch)
-  -> Algorithm strategy
-       -> Redis Lua (if enabled and healthy)
-       -> In-memory fallback (on timeout/error/open breaker)
-  -> Set X-RateLimit-* headers
-  -> HTTP 200 or 429
+Incoming Request
+    ↓
+RateLimitFilter (extract client key + algorithm from endpoint)
+    ↓
+PluggableRateLimiterService (strategy dispatch)
+    ↓
+Redis ◄──→ Lua Script (atomic check-and-update)
+    │ (configured timeout, default 500ms)
+    │ ✗ Timeout/Error or Circuit OPEN
+    ↓
+Circuit Breaker ◄──→ In-Memory Fallback (thread-safe local state)
+    ↓
+X-RateLimit-* Headers + 200/429 Response
 ```
+
+**Guarantees (implementation-level):**
+
+- ✅ **Atomic operations** - Lua scripts avoid race conditions on Redis updates
+- ✅ **Automatic failover** - circuit breaker routes traffic to fallback on Redis failures
+- ✅ **Thread-safe local fallback** - in-memory strategies use concurrent-safe structures
+- ✅ **Horizontal-readiness** - per-key isolation and Redis-backed distributed mode
+
+**Performance note:** benchmark evidence in this repository currently shows ~5.2k-5.8k RPS with local-loopback p99 in the ~74-85ms range (20000 requests, concurrency 200, local MacBook). Use dedicated load infrastructure before publishing stricter SLA claims.
 
 ## Configuration
 
