@@ -1,19 +1,19 @@
 {
-  "timestamp": "2026-05-05T06:31:58Z",
+  "timestamp": "2026-05-05T06:58:23Z",
   "url": "http://localhost:8080/api/limited/leaky-bucket",
-  "requests": 1000,
-  "concurrency": 50,
-  "duration_seconds": 0.1947,
-  "throughput_rps": 5136.65,
-  "success_count": 0,
+  "requests": 3000,
+  "concurrency": 100,
+  "duration_seconds": 0.5267,
+  "throughput_rps": 5695.32,
+  "success_count": 3000,
   "status_counts": {
-    "429": 1000
+    "200": 3000
   },
   "latency_ms": {
-    "avg": 9.383,
-    "p50": 8.706,
-    "p95": 17.706,
-    "p99": 22.537,
-    "max": 26.286
+    "avg": 17.094,
+    "p50": 16.073,
+    "p95": 30.043,
+    "p99": 37.853,
+    "max": 53.632
   }
 }

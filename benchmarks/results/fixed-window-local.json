@@ -1,20 +1,19 @@
 {
-  "timestamp": "2026-05-05T06:31:46Z",
+  "timestamp": "2026-05-05T06:58:20Z",
   "url": "http://localhost:8080/api/limited/fixed-window",
-  "requests": 1000,
-  "concurrency": 50,
-  "duration_seconds": 0.1947,
-  "throughput_rps": 5136.14,
-  "success_count": 5,
+  "requests": 3000,
+  "concurrency": 100,
+  "duration_seconds": 0.5348,
+  "throughput_rps": 5609.75,
+  "success_count": 3000,
   "status_counts": {
-    "200": 5,
-    "429": 995
+    "200": 3000
   },
   "latency_ms": {
-    "avg": 9.401,
-    "p50": 8.372,
-    "p95": 18.217,
-    "p99": 29.725,
-    "max": 54.107
+    "avg": 15.726,
+    "p50": 14.895,
+    "p95": 28.022,
+    "p99": 34.8,
+    "max": 43.63
   }
 }

@@ -1,20 +1,19 @@
 {
-  "timestamp": "2026-05-05T06:31:49Z",
+  "timestamp": "2026-05-05T06:58:21Z",
   "url": "http://localhost:8080/api/limited/sliding-window",
-  "requests": 1000,
-  "concurrency": 50,
-  "duration_seconds": 0.1899,
-  "throughput_rps": 5264.67,
-  "success_count": 5,
+  "requests": 3000,
+  "concurrency": 100,
+  "duration_seconds": 0.5238,
+  "throughput_rps": 5727.36,
+  "success_count": 3000,
   "status_counts": {
-    "429": 995,
-    "200": 5
+    "200": 3000
   },
   "latency_ms": {
-    "avg": 9.169,
-    "p50": 8.345,
-    "p95": 17.316,
-    "p99": 22.418,
-    "max": 30.52
+    "avg": 6.533,
+    "p50": 1.887,
+    "p95": 21.27,
+    "p99": 29.505,
+    "max": 44.392
   }
 }

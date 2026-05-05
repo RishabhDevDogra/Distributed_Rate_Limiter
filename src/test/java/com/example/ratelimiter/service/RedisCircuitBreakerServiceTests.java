@@ -39,5 +39,57 @@ class RedisCircuitBreakerServiceTests {
         assertEquals(RedisCircuitBreakerService.CircuitState.CLOSED, service.getState());
         assertTrue(service.allowRequest());
     }
-}
 
+    @Test
+    void circuitStartsInClosedState() {
+        RateLimiterProperties properties = new RateLimiterProperties();
+        RedisCircuitBreakerService service = new RedisCircuitBreakerService(properties);
+        assertEquals(RedisCircuitBreakerService.CircuitState.CLOSED, service.getState());
+    }
+
+    @Test
+    void successOnClosedStateKeepsCircuitClosed() {
+        RateLimiterProperties properties = new RateLimiterProperties();
+        RedisCircuitBreakerService service = new RedisCircuitBreakerService(properties);
+        service.recordSuccess();
+        service.recordSuccess();
+        assertEquals(RedisCircuitBreakerService.CircuitState.CLOSED, service.getState());
+        assertTrue(service.allowRequest());
+    }
+
+    @Test
+    void openCircuitBlocksAllRequests() {
+        RateLimiterProperties properties = new RateLimiterProperties();
+        properties.getRedis().setCircuitOpenSeconds(60);
+        RedisCircuitBreakerService service = new RedisCircuitBreakerService(properties);
+        service.recordFailure();
+        assertFalse(service.allowRequest());
+        assertFalse(service.allowRequest());
+        assertFalse(service.allowRequest());
+    }
+
+    @Test
+    void halfOpenTransitionAllowsSingleProbe() throws Exception {
+        RateLimiterProperties properties = new RateLimiterProperties();
+        properties.getRedis().setCircuitOpenSeconds(1);
+        RedisCircuitBreakerService service = new RedisCircuitBreakerService(properties);
+        service.recordFailure();
+        assertFalse(service.allowRequest());
+        Thread.sleep(1100);
+        assertTrue(service.allowRequest());
+        assertEquals(RedisCircuitBreakerService.CircuitState.HALF_OPEN, service.getState());
+    }
+
+    @Test
+    void failureOnHalfOpenReopensCircuit() throws Exception {
+        RateLimiterProperties properties = new RateLimiterProperties();
+        properties.getRedis().setCircuitOpenSeconds(1);
+        RedisCircuitBreakerService service = new RedisCircuitBreakerService(properties);
+        service.recordFailure();
+        Thread.sleep(1100);
+        service.allowRequest(); // probe -> HALF_OPEN
+        service.recordFailure(); // probe failed -> re-OPEN
+        assertEquals(RedisCircuitBreakerService.CircuitState.OPEN, service.getState());
+    }
+
+}
