@@ -1,4 +1,4 @@
-package com.example.ratelimiter.web.controller;
+package com.example.ratelimiter.controller;
 
 import java.time.Instant;
 
@@ -85,3 +85,4 @@ public class RateLimitController {
     public record ApiResponse(String message, String algorithm, String timestamp) {
     }
 }
+

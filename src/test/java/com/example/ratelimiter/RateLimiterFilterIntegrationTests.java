@@ -12,7 +12,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.example.ratelimiter.ratelimit.strategy.inmemory.InMemoryFixedWindowRateLimiter;
+import com.example.ratelimiter.strategy.inmemory.InMemoryFixedWindowRateLimiter;
 
 @SpringBootTest
 @AutoConfigureMockMvc

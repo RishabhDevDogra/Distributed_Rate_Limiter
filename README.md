@@ -53,12 +53,12 @@ ratelimiter.exclude-paths=/api/public,/health,/test,/swagger-ui/**,/v3/api-docs/
 
 ## Code Organization
 
-- `com.example.ratelimiter.web.controller` - HTTP controllers (`RateLimitController`, `HealthController`)
-- `com.example.ratelimiter.ratelimit.web` - request-level rate limit filter and client resolver
-- `com.example.ratelimiter.ratelimit.service` - service orchestration (`RateLimiterService`, `PluggableRateLimiterService`)
-- `com.example.ratelimiter.ratelimit.strategy` - strategy contracts/enums
-- `com.example.ratelimiter.ratelimit.strategy.inmemory` - in-memory algorithm implementations
-- `com.example.ratelimiter.ratelimit.config` and `.model` - properties and decision models
+- `com.example.ratelimiter.controller` - HTTP controllers (`RateLimitController`, `HealthController`)
+- `com.example.ratelimiter.filter` - request-level rate limit filter and client resolver
+- `com.example.ratelimiter.service` - service orchestration (`RateLimiterService`, `PluggableRateLimiterService`)
+- `com.example.ratelimiter.strategy` - strategy contracts/enums
+- `com.example.ratelimiter.strategy.inmemory` - in-memory algorithm implementations
+- `com.example.ratelimiter.config` and `.model` - shared properties and decision models
 
 ## Run
 

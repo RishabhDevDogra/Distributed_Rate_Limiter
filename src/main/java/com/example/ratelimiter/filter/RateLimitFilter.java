@@ -1,4 +1,4 @@
-package com.example.ratelimiter.web.filter;
+package com.example.ratelimiter.filter;
 
 import java.io.IOException;
 
@@ -113,6 +113,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
         return false;
     }
 }
+
 
 
 
