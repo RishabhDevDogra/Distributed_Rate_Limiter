@@ -15,8 +15,8 @@ public class RateLimiterProperties {
     private int windowSeconds = 60;
     private List<String> includePaths = new ArrayList<>(List.of("/api/**"));
     private List<String> excludePaths = new ArrayList<>(List.of(
-            "/api/public",
-            "/test",
+            "/health/**",
+            "/api/metrics",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/favicon.ico"));

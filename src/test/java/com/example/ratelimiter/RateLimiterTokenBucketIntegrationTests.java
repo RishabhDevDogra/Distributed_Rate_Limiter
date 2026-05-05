@@ -21,7 +21,7 @@ import com.example.ratelimiter.strategy.inmemory.InMemoryTokenBucketRateLimiter;
         "ratelimiter.limit=2",
         "ratelimiter.window-seconds=60",
         "ratelimiter.include-paths=/api/**",
-        "ratelimiter.exclude-paths=/api/public,/health,/test,/swagger-ui/**,/v3/api-docs/**,/favicon.ico"
+        "ratelimiter.exclude-paths=/health/**,/api/metrics,/swagger-ui/**,/v3/api-docs/**,/favicon.ico"
 })
 class RateLimiterTokenBucketIntegrationTests {
 

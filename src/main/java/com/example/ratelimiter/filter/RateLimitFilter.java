@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.ratelimiter.config.RateLimiterProperties;
 import com.example.ratelimiter.model.RateLimitDecision;
+import com.example.ratelimiter.service.RateLimiterMetricsService;
 import com.example.ratelimiter.service.RateLimiterService;
 import com.example.ratelimiter.strategy.LimiterStrategyType;
 
@@ -28,14 +29,17 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private final RateLimiterProperties properties;
     private final RateLimiterService limiterService;
+    private final RateLimiterMetricsService metricsService;
     private final ClientKeyResolver clientKeyResolver;
 
     public RateLimitFilter(
             RateLimiterProperties properties,
             RateLimiterService limiterService,
+            RateLimiterMetricsService metricsService,
             ClientKeyResolver clientKeyResolver) {
         this.properties = properties;
         this.limiterService = limiterService;
+        this.metricsService = metricsService;
         this.clientKeyResolver = clientKeyResolver;
     }
 
@@ -68,6 +72,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
         LimiterStrategyType strategyType = resolveStrategyType(path);
 
         RateLimitDecision decision = limiterService.evaluate(key, strategyType);
+        metricsService.recordDecision(clientId, decision.allowed());
         response.setHeader("X-RateLimit-Limit", String.valueOf(decision.limit()));
         response.setHeader("X-RateLimit-Remaining", String.valueOf(decision.remaining()));
         response.setHeader("X-RateLimit-Reset", String.valueOf(decision.resetEpochSeconds()));

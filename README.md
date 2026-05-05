@@ -18,15 +18,19 @@ This project mirrors the architecture of the C# repo (`DistributedRateLimiter`) 
 - Maven artifact renamed to `distributed-rate-limiter`
 - In-memory algorithms available: `fixed-window`, `token-bucket`, `sliding-window`, `leaky-bucket`
 - Endpoint-driven algorithm routing under `/api/limited/*` to match the .NET workflow
-- Exclusions in place for `/api/public`, `/health` (and `/test` alias), and Swagger docs
+- Exclusions in place for `/health/**` and `/api/metrics` plus Swagger docs
 - 429 responses include `Retry-After` and `X-RateLimit-*` headers
 
 ## Endpoints
 
+- `GET /health/live`
+- `GET /health/ready`
+- `GET /health`
 - `GET /api/limited/token-bucket`
 - `GET /api/limited/fixed-window`
 - `GET /api/limited/sliding-window`
 - `GET /api/limited/leaky-bucket`
+- `GET /api/metrics`
 
 ## Quick Demo
 
@@ -48,7 +52,7 @@ ratelimiter.strategy-type=fixed-window
 ratelimiter.limit=5
 ratelimiter.window-seconds=60
 ratelimiter.include-paths=/api/**
-ratelimiter.exclude-paths=/api/public,/health,/test,/swagger-ui/**,/v3/api-docs/**,/favicon.ico
+ratelimiter.exclude-paths=/health/**,/api/metrics,/swagger-ui/**,/v3/api-docs/**,/favicon.ico
 ```
 
 ## Code Organization

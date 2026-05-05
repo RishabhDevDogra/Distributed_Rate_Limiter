@@ -22,7 +22,7 @@ import com.example.ratelimiter.strategy.inmemory.InMemoryFixedWindowRateLimiter;
         "ratelimiter.limit=2",
         "ratelimiter.window-seconds=60",
         "ratelimiter.include-paths=/api/**",
-        "ratelimiter.exclude-paths=/api/public,/health,/test,/swagger-ui/**,/v3/api-docs/**,/favicon.ico"
+        "ratelimiter.exclude-paths=/health/**,/api/metrics,/swagger-ui/**,/v3/api-docs/**,/favicon.ico"
 })
 class RateLimiterFilterIntegrationTests {
 
@@ -39,34 +39,35 @@ class RateLimiterFilterIntegrationTests {
 
     @Test
     void limitedEndpointBlocksAfterConfiguredLimit() throws Exception {
-        mockMvc.perform(get("/api/limited").header("X-Forwarded-For", "10.0.0.1"))
+        mockMvc.perform(get("/api/limited/fixed-window").header("X-Forwarded-For", "10.0.0.1"))
                 .andExpect(status().isOk())
                 .andExpect(header().string("X-RateLimit-Limit", "2"))
                 .andExpect(header().string("X-RateLimit-Remaining", "1"));
 
-        mockMvc.perform(get("/api/limited").header("X-Forwarded-For", "10.0.0.1"))
+        mockMvc.perform(get("/api/limited/fixed-window").header("X-Forwarded-For", "10.0.0.1"))
                 .andExpect(status().isOk())
                 .andExpect(header().string("X-RateLimit-Remaining", "0"));
 
-        mockMvc.perform(get("/api/limited").header("X-Forwarded-For", "10.0.0.1"))
+        mockMvc.perform(get("/api/limited/fixed-window").header("X-Forwarded-For", "10.0.0.1"))
                 .andExpect(status().isTooManyRequests())
                 .andExpect(header().string("X-RateLimit-Limit", "2"))
                 .andExpect(header().string("X-RateLimit-Remaining", "0"))
                 .andExpect(header().exists("Retry-After"));
     }
 
+
     @Test
-    void publicEndpointIsExcludedFromRateLimiting() throws Exception {
+    void healthEndpointIsExcludedFromRateLimiting() throws Exception {
         for (int i = 0; i < 4; i++) {
-            mockMvc.perform(get("/api/public").header("X-Forwarded-For", "10.0.0.2"))
+            mockMvc.perform(get("/health/live").header("X-Forwarded-For", "10.0.0.3"))
                     .andExpect(status().isOk());
         }
     }
 
     @Test
-    void healthEndpointIsExcludedFromRateLimiting() throws Exception {
+    void metricsEndpointIsExcludedFromRateLimiting() throws Exception {
         for (int i = 0; i < 4; i++) {
-            mockMvc.perform(get("/health").header("X-Forwarded-For", "10.0.0.3"))
+            mockMvc.perform(get("/api/metrics").header("X-Forwarded-For", "10.0.0.4"))
                     .andExpect(status().isOk());
         }
     }
